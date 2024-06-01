@@ -1,11 +1,11 @@
-const bcrypt = require("bcryptjs")
-const User = require("../models/User")
-const OTP = require("../models/OTP")
+const bcrypt = require("bcrypt")
+const User = require("../model/User")
+const OTP = require("../model/OTP")
 const jwt = require("jsonwebtoken")
 const otpGenerator = require("otp-generator")
 const mailSender = require("../utils/mailSender")
-const { passwordUpdated } = require("../mail/templates/passwordUpdate")
-const Profile = require("../models/Profile")
+// const { passwordUpdated } = require("../mail/templates/passwordUpdate")
+const Profile = require("../model/Profile")
 require("dotenv").config()
 
 // Signup Controller for Registering USers
@@ -77,14 +77,14 @@ exports.signup = async (req, res) => {
 
     // Create the user
     let approved = ""
-    approved === "Instructor" ? (approved = false) : (approved = true)
+    approved === "Admin" ? (approved = false) : (approved = true)
 
     // Create the Additional Profile For User
     const profileDetails = await Profile.create({
       gender: null,
       dateOfBirth: null,
       about: null,
-      contactNumber: null,
+     
     })
     const user = await User.create({
       firstName,
@@ -95,7 +95,7 @@ exports.signup = async (req, res) => {
       accountType: accountType,
       approved: approved,
       additionalDetails: profileDetails._id,
-      image: "",
+      image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName}${lastName}`,
     })
 
     return res.status(200).json({
